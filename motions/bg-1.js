@@ -80,8 +80,8 @@ function resize() {
   canvas.height = Math.round(h * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
-addEventListener('resize', resize);
-resize();
+// 캔버스 박스 크기를 직접 감시: 처음 배치될 때와 크기가 바뀔 때마다 호출됨
+new ResizeObserver(resize).observe(canvas);
 
 function frame(now) {
   const t = now / 1000;
@@ -189,6 +189,9 @@ const ACCENT2 = css.getPropertyValue('--accent-2').trim() || '#ffc857';
 const LINK = 120;   // 점끼리 선이 이어지는 최대 거리(px)
 const REACH = 180;  // 포인터가 점을 끌어당기는 반경(px)
 let w = 0, h = 0, dots = [];
+// 포인터도 하나의 노드: 목표 좌표를 lerp로 부드럽게 따라감
+const target = { x: 0, y: 0 }, pointer = { x: 0, y: 0 };
+let lastMove = -Infinity;
 
 function resize() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -205,13 +208,15 @@ function resize() {
     const vx = (Math.random() - 0.5) * 24, vy = (Math.random() - 0.5) * 24;
     return { bx: x, by: y, x, y, vx, vy, r: 1 + Math.random() * 1.5 };
   });
+  // 포인터가 아직 움직인 적 없으면 화면 가운데에서 시작
+  if (lastMove === -Infinity) {
+    target.x = pointer.x = w / 2;
+    target.y = pointer.y = h / 2;
+  }
 }
-addEventListener('resize', resize);
-resize();
+// 캔버스 박스 크기를 직접 감시: 처음 배치될 때와 크기가 바뀔 때마다 호출됨
+new ResizeObserver(resize).observe(canvas);
 
-// 포인터도 하나의 노드: 목표 좌표를 lerp로 부드럽게 따라감
-const target = { x: w / 2, y: h / 2 }, pointer = { ...target };
-let lastMove = -Infinity;
 addEventListener('pointermove', (e) => {
   target.x = e.clientX;
   target.y = e.clientY;
@@ -362,8 +367,8 @@ function resize() {
   canvas.height = Math.round(h * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
-addEventListener('resize', resize);
-resize();
+// 캔버스 박스 크기를 직접 감시: 처음 배치될 때와 크기가 바뀔 때마다 호출됨
+new ResizeObserver(resize).observe(canvas);
 
 let last = 0;
 function frame(now) {
@@ -495,8 +500,8 @@ function resize() {
   canvas.height = Math.round(h * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
-addEventListener('resize', resize);
-resize();
+// 캔버스 박스 크기를 직접 감시: 처음 배치될 때와 크기가 바뀔 때마다 호출됨
+new ResizeObserver(resize).observe(canvas);
 
 let meteor = null, nextMeteor = 1.5;
 function launchMeteor(t) {
@@ -661,8 +666,8 @@ function resize() {
   ctx.fillStyle = BG;
   ctx.fillRect(0, 0, w, h);
 }
-addEventListener('resize', resize);
-resize();
+// 캔버스 박스 크기를 직접 감시: 처음 배치될 때와 크기가 바뀔 때마다 호출됨
+new ResizeObserver(resize).observe(canvas);
 
 const pick = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
 
@@ -827,8 +832,8 @@ function resize() {
     }
   });
 }
-addEventListener('resize', resize);
-resize();
+// 캔버스 박스 크기를 직접 감시: 처음 배치될 때와 크기가 바뀔 때마다 호출됨
+new ResizeObserver(resize).observe(canvas);
 
 let last = 0;
 function frame(now) {
@@ -931,8 +936,8 @@ function resize() {
   ctx.fillStyle = BG;
   ctx.fillRect(0, 0, w, h);
 }
-addEventListener('resize', resize);
-resize();
+// 캔버스 박스 크기를 직접 감시: 처음 배치될 때와 크기가 바뀔 때마다 호출됨
+new ResizeObserver(resize).observe(canvas);
 
 // 로켓: 목표 높이에서 정확히 정점에 닿도록 초기 속도를 역산 (vy = -√(2gh))
 function launch(tx, ty) {
@@ -1140,8 +1145,8 @@ function resize() {
   canvas.height = Math.round(h * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
-addEventListener('resize', resize);
-resize();
+// 캔버스 박스 크기를 직접 감시: 처음 배치될 때와 크기가 바뀔 때마다 호출됨
+new ResizeObserver(resize).observe(canvas);
 
 // 발사 지점에서 위쪽 ±57° 부채꼴로 150조각을 뿌림 (무대 높이에 맞춰 세기 조절)
 function burst(ox, oy) {

@@ -1,6 +1,6 @@
 # HANDOFF · 모션 도감 100
 
-다른 계정의 Claude Code 세션이 이 프로젝트를 이어받기 위한 문서입니다. 작성 시점: 2026-10-09, 마지막 커밋 `7367d1a`.
+다른 계정의 Claude Code 세션이 이 프로젝트를 이어받기 위한 문서입니다. 작성 시점: 2026-10-09 (2026-10-10 갱신).
 
 ## 1. 프로젝트 목적
 
@@ -53,20 +53,19 @@ tools/MOTION-SPEC.md  모션 항목 작성 규격 (새 모션 추가 시 반드�
 - 모션 세트 서랍과 묶음 프롬프트, 비우기 인라인 확인
 - GitHub 저장소 생성, GitHub Pages 배포, 라이브 사이트에서 100개 오류 없음 확인
 - 목록에서 선택 항목이 고정 그룹 헤더에 가려지던 문제 수정 (`scroll-margin-block`)
-- 이번 인계 작업: `tools/` 3개 파일, `HANDOFF.md`, `CLAUDE.md` 추가 (아직 커밋 안 됨)
+- 인계 문서와 `tools/` 커밋·푸시 (`9fcc35f`)
+- 캔버스 데모 크기 감지를 `ResizeObserver`로 통일: #1–8, #32, #35, #37 (bg-2.js와 동일한 방식)
 
 ### 진행 중
 
-- 없음. 인계 문서와 `tools/`가 커밋 대기 중입니다.
+- 없음.
 
 ### 다음 단계 (우선순위 순)
 
-1. 인계 파일 커밋·푸시 (아래 7절의 메시지 초안 참고)
-2. 캔버스 데모 크기 감지 통일: #1–8, #32, #35, #37은 `window` resize만 씀. bg-2.js처럼 `new ResizeObserver(resize).observe(canvas)`로 바꾸기 (첫 프레임 0×0 위험 예방, 실제 실패 사례는 아직 없음)
-3. README의 "구성" 표에 `tools/` 안내 추가
-4. 시각 품질 다듬기 (4절 목록): 특히 #33 라이트 스테이지, #75 원거리 격자 계단 현상, #6 라이트 테마 눈송이
-5. 프롬프트에 reduced-motion 대안이 없는 #92 conic-border, #99 shape-morph 보완
-6. 아이디어(미착수): 세트를 URL로 공유 (해시는 영문·숫자·`.`·`_`·`~`·`-`만 허용되는 환경 고려), 목록 썸네일 미리보기, 모션 추가
+1. README의 "구성" 표에 `tools/` 안내 추가
+2. 시각 품질 다듬기 (5절 목록): 특히 #33 라이트 스테이지, #75 원거리 격자 계단 현상, #6 라이트 테마 눈송이
+3. 프롬프트에 reduced-motion 대안이 없는 #92 conic-border, #99 shape-morph 보완
+4. 아이디어(미착수): 세트를 URL로 공유 (해시는 영문·숫자·`.`·`_`·`~`·`-`만 허용되는 환경 고려), 목록 썸네일 미리보기, 모션 추가
 
 ## 4. 설계 결정과 이유
 
@@ -112,7 +111,7 @@ tools/MOTION-SPEC.md  모션 항목 작성 규격 (새 모션 추가 시 반드�
 - **QA 격자 페이지:** iframe을 한 화면에 많이 띄우면 아래쪽 칸은 애니메이션이 멈춰 빈칸처럼 보임. 한 번에 2~8개 정도로 나눠서 확인
 - **`body{display:block}`만으로는 부족:** 기본 `place-items:center`가 최신 Chrome에서 블록 레이아웃에도 적용돼 자식이 가운데로 줄어듦 → 스크롤 데모는 `place-items:normal`로 되돌림
 - **IntersectionObserver `rootMargin`:** 교차 출처 샌드박스 iframe에서 무시됨 → #47은 rAF 스로틀 스크롤 핸들러로 구현
-- **캔버스 0×0:** iframe이 늦게 배치되면 첫 실행 때 0×0 → bg-2.js는 ResizeObserver로 해결 (다음 단계 2번)
+- **캔버스 0×0:** iframe이 늦게 배치되면 첫 실행 때 0×0 → 모든 캔버스 데모를 `new ResizeObserver(resize).observe(canvas)`로 통일해 해결. 참고로 iframe 안의 `window`는 iframe 요소 크기가 바뀔 때도 resize 이벤트를 받으므로, 바뀌기 전 코드도 크기 변화 자체는 따라가고 있었음 (문제는 첫 프레임뿐)
 - **`var()`/`calc()`를 keyframes 안에서 쓴 dash 애니메이션(#56):** 움직이지 않아 `animation-delay` 음수값으로 해결
 - **`animation` 단축 속성 덮어쓰기(#100):** 더 구체적인 선택자의 단축 속성이 duration을 0s로 초기화 → 레이어마다 전체 단축 속성 작성
 - **시스템 임시 폴더 소실:** 첫 세션의 스크래치패드(규격서, 검사기, QA 스크립트)가 정리되어 사라짐 → 이번에 `tools/`로 저장소에 복원
@@ -130,6 +129,8 @@ node tools/validate.js motions/*.js
 # 런타임 오류 전수 검사 (서버를 띄운 상태에서)
 npm i --no-save playwright && npx playwright install chromium
 node tools/sweep.js http://127.0.0.1:8790/
+# playwright를 새로 설치하는 대신 npx 캐시에 있는 것을 쓸 수도 있음
+# NODE_PATH=~/.npm/_npx/<해시>/node_modules node tools/sweep.js http://127.0.0.1:8790/
 # 특정 항목 스크린샷: node tools/sweep.js http://127.0.0.1:8790/ particle-wave,glitch-text → tools/shots/
 
 # 단일 파일 빌드
@@ -149,18 +150,9 @@ node build.mjs                 # → dist/motion-dogam.html
 
 Claude 미리보기용 `.claude/launch.json`(git 제외)에 `motion-dogam` 설정이 있었습니다. 새 환경에서는 다시 만들면 됩니다: 실행 명령 `python3 -m http.server 8790 --bind 127.0.0.1`, 포트 8790.
 
-## 7. 미커밋 변경과 커밋 메시지 초안
+## 7. 미커밋 변경
 
-미커밋: `HANDOFF.md`, `CLAUDE.md`, `tools/validate.js`, `tools/sweep.js`, `tools/MOTION-SPEC.md`, `.gitignore`(`tools/shots/` 추가). 커밋은 하지 않았습니다.
-
-```
-인계 문서와 개발 도구 추가
-
-- HANDOFF.md: 구조, 진행 상황, 설계 결정, 알려진 문제, 실행·테스트 방법
-- CLAUDE.md: 프로젝트 규칙과 컨벤션
-- tools/validate.js, tools/sweep.js, tools/MOTION-SPEC.md: 임시 폴더에만 있던 검사 도구와 작성 규격을 저장소로 복원
-- .gitignore: tools/shots/ 제외
-```
+없습니다. 마지막 작업까지 `main`에 푸시돼 있습니다.
 
 ## 8. 사용한 도구 환경
 

@@ -247,8 +247,8 @@ function resize() {
   canvas.height = Math.round(h * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
-addEventListener('resize', resize);
-resize();
+// 캔버스 박스 크기를 직접 감시: 처음 배치될 때와 크기가 바뀔 때마다 호출됨
+new ResizeObserver(resize).observe(canvas);
 
 // 데모용 자동 시연 — 실제 적용 시 삭제해도 됩니다
 let auto = true;
@@ -585,8 +585,8 @@ function resize() {
   canvas.height = Math.round(h * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
-addEventListener('resize', resize);
-resize();
+// 캔버스 박스 크기를 직접 감시: 처음 배치될 때와 크기가 바뀔 때마다 호출됨
+new ResizeObserver(resize).observe(canvas);
 
 // 데모용 자동 시연 — 실제 적용 시 삭제해도 됩니다
 let auto = true;
@@ -951,8 +951,8 @@ function resize() {
     for (let c = 0; c < cols; c++) cells.push({ x: ox + c * GAP, y: oy + r * GAP, v: 0 });
   }
 }
-addEventListener('resize', resize);
-resize();
+// 캔버스 박스 크기를 직접 감시: 처음 배치될 때와 크기가 바뀔 때마다 호출됨
+new ResizeObserver(resize).observe(canvas);
 
 // 데모용 자동 시연 — 실제 적용 시 삭제해도 됩니다
 let auto = true;
